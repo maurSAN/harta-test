@@ -36,16 +36,19 @@ counties.forEach(c=>{
     .bindPopup(c.name);
 });
 
-fetch('C:\Users\mr.M\Desktop\maps proj\judete\centre-judete.geojson')
-  .then(response => response.json())
+fetch('centre-judete.geojson')
+   .then(res => res.json())
   .then(data => {
-    L.geoJSON(data, {
-      onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.name);
-      }
+    const geojsonLayer = L.geoJSON(data, {
+      style: { color:'#3388ff', weight:2, fillOpacity:0.1 },
+      onEachFeature: (feature, layer) => layer.bindPopup(feature.properties.name)
     }).addTo(map);
+    map.fitBounds(geojsonLayer.getBounds());
+  })
+  .catch(err => console.error('Eroare la încărcare GeoJSON:', err));
   });
 
 </script>
 </body>
 </html>
+
