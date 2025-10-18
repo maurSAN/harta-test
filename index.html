@@ -68,7 +68,7 @@
       "tulcea": "TL", "vaslui": "VS", "vâlcea": "VL", "vrancea": "VN", "bucurești": "B"
     };
 
-    // Culoare fixă pentru fiecare județ
+    // Culoare fixă Sunt pentru fiecare județ
     const colors = {
       "AB": "#e6194b", "AR": "#3cb44b", "AG": "#ffe119", "BC": "#4363d8", "BH": "#f58231",
       "BN": "#911eb4", "BT": "#46f0f0", "BV": "#f032e6", "BR": "#bcf60c", "BZ": "#fabebe",
@@ -88,11 +88,15 @@
         return res.json();
       })
       .then(data => {
+        // Logăm toate numele județelor pentru depanare
+        console.log('Nume județe din GeoJSON:', data.features.map(f => f.properties.NAME_1));
+        
         const geoLayer = L.geoJSON(data, {
           style: (feature) => {
             const rawName = feature.properties.NAME_1 || '';
             const name = normalizeName(rawName);
             const abbr = abbreviations[name] || "??";
+            if (abbr === "??") console.warn(`Județ negăsit în abbreviations: ${rawName}`);
             return {
               color: "#333",
               weight: 2,
@@ -121,7 +125,7 @@
       .catch(err => {
         console.error('Eroare la încărcare GeoJSON:', err);
         const mapDiv = document.getElementById('map');
-        mapDiv.innerHTML = '<p style="text-align:center;color:red;">Eroare: Nu s-a putut încărca ro.json. Verifică dacă fișierul e în folderul corect sau descarcă-l din nou.</p>';
+        mapDiv.innerHTML = '<p style="text-align:center;color:red;">Eroare: Nu s-a putut încărca ro.json. Verifică dacă fișierul e în folderul corect sau descarcă-l din nou de la <a href="https://raw.githubusercontent.com/GabrielRondelli/geojson/main/romania-counties.geojson">aici</a>.</p>';
       });
   </script>
 </body>
