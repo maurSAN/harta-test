@@ -3,88 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Judete Romania</title>
+    <title>Harta Judete Romania</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             color: #333;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
         }
+        svg {
+            width: 600px;
+            height: 400px;
+            border: 1px solid #ccc;
+        }
         .judet {
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            color: white;
-            text-align: center;
-            width: 100px;
-            display: inline-block;
+            stroke: #333;
+            stroke-width: 0.5;
+        }
+        .judet-label {
+            font-size: 10px;
+            fill: white;
+            text-anchor: middle;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <div>
-        <h1>Județe România</h1>
-        <div id="judete-container"></div>
-    </div>
+    <h1>Harta Județe România</h1>
+    <svg id="harta-romania">
+        <!-- Exemple de path-uri pentru județe (simplificate) -->
+        <path id="AB" class="judet" d="M100,100 L120,100 L120,120 L100,120 Z"></path>
+        <path id="AG" class="judet" d="M130,100 L150,100 L150,120 L130,120 Z"></path>
+        <path id="AR" class="judet" d="M160,100 L180,100 L180,120 L160,120 Z"></path>
+        <path id="BC" class="judet" d="M190,100 L210,100 L210,120 L190,120 Z"></path>
+        <path id="BH" class="judet" d="M100,130 L120,130 L120,150 L100,150 Z"></path>
+        <path id="BN" class="judet" d="M130,130 L150,130 L150,150 L130,150 Z"></path>
+        <path id="BR" class="judet" d="M160,130 L180,130 L180,150 L160,150 Z"></path>
+        <path id="BT" class="judet" d="M190,130 L210,130 L210,150 L190,150 Z"></path>
+        <path id="BV" class="judet" d="M100,160 L120,160 L120,180 L100,180 Z"></path>
+        <path id="BZ" class="judet" d="M130,160 L150,160 L150,180 L130,180 Z"></path>
+        <path id="CJ" class="judet" d="M160,160 L180,160 L180,180 L160,180 Z"></path>
+        <path id="CL" class="judet" d="M190,160 L210,160 L210,180 L190,180 Z"></path>
+        <path id="CS" class="judet" d="M100,190 L120,190 L120,210 L100,210 Z"></path>
+        <path id="CT" class="judet" d="M130,190 L150,190 L150,210 L130,210 Z"></path>
+        <path id="CV" class="judet" d="M160,190 L180,190 L180,210 L160,210 Z"></path>
+        <path id="DB" class="judet" d="M190,190 L210,190 L210,210 L190,210 Z"></path>
+        <path id="DJ" class="judet" d="M100,220 L120,220 L120,240 L100,240 Z"></path>
+        <path id="GJ" class="judet" d="M130,220 L150,220 L150,240 L130,240 Z"></path>
+        <path id="GL" class="judet" d="M160,220 L180,220 L180,240 L160,240 Z"></path>
+        <path id="GR" class="judet" d="M190,220 L210,220 L210,240 L190,240 Z"></path>
+        <path id="HD" class="judet" d="M100,250 L120,250 L120,270 L100,270 Z"></path>
+        <path id="HR" class="judet" d="M130,250 L150,250 L150,270 L130,270 Z"></path>
+        <path id="IF" class="judet" d="M160,250 L180,250 L180,270 L160,270 Z"></path>
+        <path id="IL" class="judet" d="M190,250 L210,250 L210,270 L190,270 Z"></path>
+        <path id="IS" class="judet" d="M100,280 L120,280 L120,300 L100,300 Z"></path>
+        <path id="MM" class="judet" d="M130,280 L150,280 L150,300 L130,300 Z"></path>
+        <path id="MH" class="judet" d="M160,280 L180,280 L180,300 L160,300 Z"></path>
+        <path id="MS" class="judet" d="M190,280 L210,280 L210,300 L190,300 Z"></path>
+        <path id="NT" class="judet" d="M100,310 L120,310 L120,330 L100,330 Z"></path>
+        <path id="OT" class="judet" d="M130,310 L150,310 L150,330 L130,330 Z"></path>
+        <path id="PH" class="judet" d="M160,310 L180,310 L180,330 L160,330 Z"></path>
+        <path id="SB" class="judet" d="M190,310 L210,310 L210,330 L190,330 Z"></path>
+        <path id="SJ" class="judet" d="M100,340 L120,340 L120,360 L100,360 Z"></path>
+        <path id="SM" class="judet" d="M130,340 L150,340 L150,360 L130,360 Z"></path>
+        <path id="SV" class="judet" d="M160,340 L180,340 L180,360 L160,360 Z"></path>
+        <path id="TL" class="judet" d="M190,340 L210,340 L210,360 L190,360 Z"></path>
+        <path id="TM" class="judet" d="M100,370 L120,370 L120,390 L100,390 Z"></path>
+        <path id="TR" class="judet" d="M130,370 L150,370 L150,390 L130,390 Z"></path>
+        <path id="VL" class="judet" d="M160,370 L180,370 L180,390 L160,390 Z"></path>
+        <path id="VN" class="judet" d="M190,370 L210,370 L210,390 L190,390 Z"></path>
+        <path id="VS" class="judet" d="M220,370 L240,370 L240,390 L220,390 Z"></path>
+        <path id="B" class="judet" d="M250,370 L270,370 L270,390 L250,390 Z"></path>
+    </svg>
 
     <script>
         // JSON cu județele și culorile
         const judete = [
-            { "abreviere": "AB", "culoare": "#1a73e8" },
-            { "abreviere": "AG", "culoare": "#d81b60" },
-            { "abreviere": "AR", "culoare": "#388e3c" },
-            { "abreviere": "BC", "culoare": "#f4511e" },
-            { "abreviere": "BH", "culoare": "#8e24aa" },
-            { "abreviere": "BN", "culoare": "#0288d1" },
-            { "abreviere": "BR", "culoare": "#c2185b" },
-            { "abreviere": "BT", "culoare": "#7b1fa2" },
-            { "abreviere": "BV", "culoare": "#0097a7" },
-            { "abreviere": "BZ", "culoare": "#f57c00" },
-            { "abreviere": "CJ", "culoare": "#689f38" },
-            { "abreviere": "CL", "culoare": "#1976d2" },
-            { "abreviere": "CS", "culoare": "#ad1457" },
-            { "abreviere": "CT", "culoare": "#009688" },
-            { "abreviere": "CV", "culoare": "#e64a19" },
-            { "abreviere": "DB", "culoare": "#512da8" },
-            { "abreviere": "DJ", "culoare": "#0288d1" },
-            { "abreviere": "GJ", "culoare": "#d32f2f" },
-            { "abreviere": "GL", "culoare": "#7c4dff" },
-            { "abreviere": "GR", "culoare": "#2e7d32" },
-            { "abreviere": "HD", "culoare": "#c62828" },
-            { "abreviere": "HR", "culoare": "#6a1b9a" },
-            { "abreviere": "IF", "culoare": "#0277bd" },
-            { "abreviere": "IL", "culoare": "#f9a825" },
-            { "abreviere": "IS", "culoare": "#00838f" },
-            { "abreviere": "MM", "culoare": "#d84315" },
-            { "abreviere": "MH", "culoare": "#4a148c" },
-            { "abreviere": "MS", "culoare": "#ef6c00" },
-            { "abreviere": "NT", "culoare": "#00695c" },
-            { "abreviere": "OT", "culoare": "#283593" },
-            { "abreviere": "PH", "culoare": "#c2185b" },
-            { "abreviere": "SB", "culoare": "#388e3c" },
-            { "abreviere": "SJ", "culoare": "#e64a19" },
-            { "abreviere": "SM", "culoare": "#8e24aa" },
-            { "abreviere": "SV", "culoare": "#0288d1" },
-            { "abreviere": "TL", "culoare": "#ad1457" },
-            { "abreviere": "TM", "culoare": "#009688" },
-            <div class="judet" style="background-color: #512da8;">TR</div>
-            <div class="judet" style="background-color: #d32f2f;">VL</div>
-            <div class="judet" style="background-color: #7c4dff;">VN</div>
-            <div class="judet" style="background-color: #2e7d32;">VS</div>
-            <div class="judet" style="background-color: #1a73e8;">B</div>
+            { "abreviere": "AB", "culoare": "#1a73e8", "x": 110, "y": 110 },
+            { "abreviere": "AG", "culoare": "#d81b60", "x": 140, "y": 110 },
+            { "abreviere": "AR", "culoare": "#388e3c", "x": 170, "y": 110 },
+            { "abreviere": "BC", "culoare": "#f4511e", "x": 200, "y": 110 },
+            { "abreviere": "BH", "culoare": "#8e24aa", "x": 110, "y": 140 },
+            { "abreviere": "BN", "culoare": "#0288d1", "x": 140, "y": 140 },
+            { "abreviere": "BR", "culoare": "#c2185b", "x": 170, "y": 140 },
+            { "abreviere": "BT", "culoare": "#7b1fa2", "x": 200, "y": 140 },
+            { "abreviere": "BV", "culoare": "#0097a7", "x": 110, "y": 170 },
+            { "abreviere": "BZ", "culoare": "#f57c00", "x": 140, "y": 170 },
+            { "abreviere": "CJ", "culoare": "#689f38", "x": 170, "y": 170 },
+            { "abreviere": "CL", "culoare": "#1976d2", "x": 200, "y": 170 },
+            { "abreviere": "CS", "culoare": "#ad1457", "x": 110, "y": 200 },
+            { "abreviere": "CT", "culoare": "#009688", "x": 140, "y": 200 },
+            { "abreviere": "CV", "culoare": "#e64a19", "x": 170, "y": 200 },
+            { "abreviere": "DB", "culoare": "#512da8", "x": 200, "y": 200 },
+            { "abreviere": "DJ", "culoare": "#0288d1", "x": 110, "y": 230 },
+            { "abreviere": "GJ", "culoare": "#d32f2f", "x": 140, "y": 230 },
+            { "abreviere": "GL", "culoare": "#7c4dff", "x": 170, "y": 230 },
+            { "abreviere": "GR", "culoare": "#2e7d32", "x": 200, "y": 230 },
+            { "abreviere": "HD", "culoare": "#c62828", "x": 110, "y": 260 },
+            { "abreviere": "HR", "culoare": "#6a1b9a", "x": 140, "y": 260 },
+            { "abreviere": "IF", "culoare": "#0277bd", "x": 170, "y": 260 },
+            { "abreviere": "IL", "culoare": "#f9a825", "x": 200, "y": 260 },
+            { "abreviere": "IS", "culoare": "#00838f", "x": 110, "y": 290 },
+            { "abreviere": "MM", "culoare": "#d84315", "x": 140, "y": 290 },
+            { "abreviere": "MH", "culoare": "#4a148c", "x": 170, "y": 290 },
+            { "abreviere": "MS", "culoare": "#ef6c00", "x": 200, "y": 290 },
+            { "abreviere": "NT", "culoare": "#00695c", "x": 110, "y": 320 },
+            { "abreviere": "OT", "culoare": "#283593", "x": 140, "y": 320 },
+            { "abreviere": "PH", "culoare": "#c2185b", "x": 170, "y": 320 },
+            { "abreviere": "SB", "culoare": "#388e3c", "x": 200, "y": 320 },
+            { "abreviere": "SJ", "culoare": "#e64a19", "x": 110, "y": 350 },
+            { "abreviere": "SM", "culoare": "#8e24aa", "x": 140, "y": 350 },
+            { "abreviere": "SV", "culoare": "#0288d1", "x": 170, "y": 350 },
+            { "abreviere": "TL", "culoare": "#ad1457", "x": 200, "y": 350 },
+            { "abreviere": "TM", "culoare": "#009688", "x": 110, "y": 380 },
+            { "abreviere": "TR", "culoare": "#512da8", "x": 140, "y": 380 },
+            { "abreviere": "VL", "culoare": "#d32f2f", "x": 170, "y": 380 },
+            { "abreviere": "VN", "culoare": "#7c4dff", "x": 200, "y": 380 },
+            { "abreviere": "VS", "culoare": "#2e7d32", "x": 230, "y": 380 },
+            { "abreviere": "B", "culoare": "#1a73e8", "x": 260, "y": 380 }
         ];
 
-        // Generare dinamică a div-urilor pentru județe
-        const container = document.getElementById('judete-container');
+        // Aplică culorile și adaugă etichetele
         judete.forEach(judet => {
-            const div = document.createElement('div');
-            div.className = 'judet';
-            div.style.backgroundColor = judet.culoare;
-            div.textContent = judet.abreviere;
-            container.appendChild(div);
+            const path = document.getElementById(judet.abreviere);
+            if (path) {
+                path.style.fill = judet.culoare;
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", judet.x);
+                text.setAttribute("y", judet.y);
+                text.setAttribute("class", "judet-label");
+                text.textContent = judet.abreviere;
+                document.getElementById("harta-romania").appendChild(text);
+            }
         });
     </script>
 </body>
