@@ -124,7 +124,7 @@
     {
       "type": "Feature",
       "properties": { "NAME_1": "Ilfov" },
-      "geometry": { "type": "Polygon", "coordinates": [[[26.0, 44.6], [26.2, 44.4], [26.2, 44.6], [26.0, 44.6], [26.0, 44.4]]] }
+      "geometry": { "type": "Polygon", "coordinates": [[[26.0, 44.6], [26.2, 44.6], [26.2, 44.8], [26.0, 44.8], [26.0, 44.6]]] }
     },
     {
       "type": "Feature",
@@ -209,7 +209,7 @@
     {
       "type": "Feature",
       "properties": { "NAME_1": "Bucuresti" },
-      "geometry": { "type": "Polygon", "coordinates": [[[26.0, 44.4], [26.2, 44.4], [26.2, 44.5], [26.0, 44.5], [26.0, 44.4]]] }
+      "geometry": { "type": "Polygon", "coordinates": [[[26.0, 44.5], [26.2, 44.5], [26.2, 44.6], [26.0, 44.6], [26.0, 44.5]]] }
     }
   ]
 }
