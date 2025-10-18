@@ -124,7 +124,7 @@
     {
       "type": "Feature",
       "properties": { "NAME_1": "Ilfov" },
-      "geometry": { "type": "Polygon", "coordinates": [[[26.0, 44.4], [26.2, 44.4], [26.2, 44.6], [26.0, 44.6], [26.0, 44.4]]] }
+      "geometry": { "type": "Polygon", "coordinates": [[[26.0, 44.6], [26.2, 44.4], [26.2, 44.6], [26.0, 44.6], [26.0, 44.4]]] }
     },
     {
       "type": "Feature",
