@@ -23,24 +23,27 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Încarcă GeoJSON-ul cu județele
-    fetch('centre-judete.geojson')
+    // URL raw pentru GeoJSON-ul tău din GitHub
+    const geojsonURL = 'https://raw.githubusercontent.com/maurSAN/harta-test/main/centre-judete.geojson';
+
+    // Încarcă GeoJSON și afișează județele
+    fetch(geojsonURL)
       .then(res => res.json())
       .then(data => {
         const geojsonLayer = L.geoJSON(data, {
           style: {
-            color: '#3388ff',    // contur albastru
+            color: '#3388ff',  // contur albastru
             weight: 2,
-            fillOpacity: 0.1      // interior transparent
+            fillOpacity: 0.1   // interior semi-transparent
           },
           onEachFeature: (feature, layer) => {
-            // popup cu numele județului (verifică proprietățile din fișier)
+            // popup cu numele județului (verifică proprietățile fișierului)
             const name = feature.properties.name || feature.properties.NUME || 'Județ necunoscut';
             layer.bindPopup(name);
           }
         }).addTo(map);
 
-        // ajustează zoom-ul pentru a încadra toate județele
+        // ajustează zoom-ul ca să încadreze toate județele
         map.fitBounds(geojsonLayer.getBounds());
       })
       .catch(err => console.error('Eroare la încărcare GeoJSON:', err));
