@@ -1,144 +1,136 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harta Judete Romania</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        svg {
-            width: 600px;
-            height: 400px;
-            border: 1px solid #ccc;
-        }
-        .judet {
-            stroke: #333;
-            stroke-width: 0.5;
-        }
-        .judet-label {
-            font-size: 10px;
-            fill: white;
-            text-anchor: middle;
-            pointer-events: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harta Județe România</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    #map {
+      width: 100%;
+      max-width: 800px;
+      height: 600px;
+      border: 1px solid #ccc;
+    }
+    .county-label {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      font-size: 10px;
+      border-radius: 3px;
+      padding: 2px 5px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Județe România</h1>
-    <svg id="harta-romania">
-        <!-- Placeholder path-uri pentru județe (dreptunghiuri) -->
-        <path id="AB" class="judet" d="M50,50 L70,50 L70,70 L50,70 Z"></path>
-        <path id="AG" class="judet" d="M80,50 L100,50 L100,70 L80,70 Z"></path>
-        <path id="AR" class="judet" d="M110,50 L130,50 L130,70 L110,70 Z"></path>
-        <path id="BC" class="judet" d="M140,50 L160,50 L160,70 L140,70 Z"></path>
-        <path id="BH" class="judet" d="M50,80 L70,80 L70,100 L50,100 Z"></path>
-        <path id="BN" class="judet" d="M80,80 L100,80 L100,100 L80,100 Z"></path>
-        <path id="BR" class="judet" d="M110,80 L130,80 L130,100 L110,100 Z"></path>
-        <path id="BT" class="judet" d="M140,80 L160,80 L160,100 L140,100 Z"></path>
-        <path id="BV" class="judet" d="M50,110 L70,110 L70,130 L50,130 Z"></path>
-        <path id="BZ" class="judet" d="M80,110 L100,110 L100,130 L80,130 Z"></path>
-        <path id="CJ" class="judet" d="M110,110 L130,110 L130,130 L110,130 Z"></path>
-        <path id="CL" class="judet" d="M140,110 L160,110 L160,130 L140,130 Z"></path>
-        <path id="CS" class="judet" d="M50,140 L70,140 L70,160 L50,160 Z"></path>
-        <path id="CT" class="judet" d="M80,140 L100,140 L100,160 L80,160 Z"></path>
-        <path id="CV" class="judet" d="M110,140 L130,140 L130,160 L110,160 Z"></path>
-        <path id="DB" class="judet" d="M140,140 L160,140 L160,160 L140,160 Z"></path>
-        <path id="DJ" class="judet" d="M50,170 L70,170 L70,190 L50,190 Z"></path>
-        <path id="GJ" class="judet" d="M80,170 L100,170 L100,190 L80,190 Z"></path>
-        <path id="GL" class="judet" d="M110,170 L130,170 L130,190 L110,190 Z"></path>
-        <path id="GR" class="judet" d="M140,170 L160,170 L160,190 L140,190 Z"></path>
-        <path id="HD" class="judet" d="M50,200 L70,200 L70,220 L50,220 Z"></path>
-        <path id="HR" class="judet" d="M80,200 L100,200 L100,220 L80,220 Z"></path>
-        <path id="IF" class="judet" d="M110,200 L130,200 L130,220 L110,220 Z"></path>
-        <path id="IL" class="judet" d="M140,200 L160,200 L160,220 L140,220 Z"></path>
-        <path id="IS" class="judet" d="M50,230 L70,230 L70,250 L50,250 Z"></path>
-        <path id="MM" class="judet" d="M80,230 L100,230 L100,250 L80,250 Z"></path>
-        <path id="MH" class="judet" d="M110,230 L130,230 L130,250 L110,250 Z"></path>
-        <path id="MS" class="judet" d="M140,230 L160,230 L160,250 L140,250 Z"></path>
-        <path id="NT" class="judet" d="M50,260 L70,260 L70,280 L50,280 Z"></path>
-        <path id="OT" class="judet" d="M80,260 L100,260 L100,280 L80,280 Z"></path>
-        <path id="PH" class="judet" d="M110,260 L130,260 L130,280 L110,280 Z"></path>
-        <path id="SB" class="judet" d="M140,260 L160,260 L160,280 L140,280 Z"></path>
-        <path id="SJ" class="judet" d="M50,290 L70,290 L70,310 L50,310 Z"></path>
-        <path id="SM" class="judet" d="M80,290 L100,290 L100,310 L80,310 Z"></path>
-        <path id="SV" class="judet" d="M110,290 L130,290 L130,310 L110,310 Z"></path>
-        <path id="TL" class="judet" d="M140,290 L160,290 L160,310 L140,310 Z"></path>
-        <path id="TM" class="judet" d="M50,320 L70,320 L70,340 L50,340 Z"></path>
-        <path id="TR" class="judet" d="M80,320 L100,320 L100,340 L80,340 Z"></path>
-        <path id="VL" class="judet" d="M110,320 L130,320 L130,340 L110,340 Z"></path>
-        <path id="VN" class="judet" d="M140,320 L160,320 L160,340 L140,340 Z"></path>
-        <path id="VS" class="judet" d="M170,320 L190,320 L190,340 L170,340 Z"></path>
-        <path id="B" class="judet" d="M200,320 L220,320 L220,340 L200,340 Z"></path>
-    </svg>
+  <h1>Județe România</h1>
+  <div id="map"></div>
 
-    <script>
-        // JSON cu județele, culorile și coordonatele pentru etichete
-        const judete = [
-            { "abreviere": "AB", "culoare": "#1a73e8", "x": 60, "y": 60 },
-            { "abreviere": "AG", "culoare": "#d81b60", "x": 90, "y": 60 },
-            { "abreviere": "AR", "culoare": "#388e3c", "x": 120, "y": 60 },
-            { "abreviere": "BC", "culoare": "#f4511e", "x": 150, "y": 60 },
-            { "abreviere": "BH", "culoare": "#8e24aa", "x": 60, "y": 90 },
-            { "abreviere": "BN", "culoare": "#0288d1", "x": 90, "y": 90 },
-            { "abreviere": "BR", "culoare": "#c2185b", "x": 120, "y": 90 },
-            { "abreviere": "BT", "culoare": "#7b1fa2", "x": 150, "y": 90 },
-            { "abreviere": "BV", "culoare": "#0097a7", "x": 60, "y": 120 },
-            { "abreviere": "BZ", "culoare": "#f57c00", "x": 90, "y": 120 },
-            { "abreviere": "CJ", "culoare": "#689f38", "x": 120, "y": 120 },
-            { "abreviere": "CL", "culoare": "#1976d2", "x": 150, "y": 120 },
-            { "abreviere": "CS", "culoare": "#ad1457", "x": 60, "y": 150 },
-            { "abreviere": "CT", "culoare": "#009688", "x": 90, "y": 150 },
-            { "abreviere": "CV", "culoare": "#e64a19", "x": 120, "y": 150 },
-            { "abreviere": "DB", "culoare": "#512da8", "x": 150, "y": 150 },
-            { "abreviere": "DJ", "culoare": "#0288d1", "x": 60, "y": 180 },
-            { "abreviere": "GJ", "culoare": "#d32f2f", "x": 90, "y": 180 },
-            { "abreviere": "GL", "culoare": "#7c4dff", "x": 120, "y": 180 },
-            { "abreviere": "GR", "culoare": "#2e7d32", "x": 150, "y": 180 },
-            { "abreviere": "HD", "culoare": "#c62828", "x": 60, "y": 210 },
-            { "abreviere": "HR", "culoare": "#6a1b9a", "x": 90, "y": 210 },
-            { "abreviere": "IF", "culoare": "#0277bd", "x": 120, "y": 210 },
-            { "abreviere": "IL", "culoare": "#f9a825", "x": 150, "y": 210 },
-            { "abreviere": "IS", "culoare": "#00838f", "x": 60, "y": 240 },
-            { "abreviere": "MM", "culoare": "#d84315", "x": 90, "y": 240 },
-            { "abreviere": "MH", "culoare": "#4a148c", "x": 120, "y": 240 },
-            { "abreviere": "MS", "culoare": "#ef6c00", "x": 150, "y": 240 },
-            { "abreviere": "NT", "culoare": "#00695c", "x": 60, "y": 270 },
-            { "abreviere": "OT", "culoare": "#283593", "x": 90, "y": 270 },
-            { "abreviere": "PH", "culoare": "#c2185b", "x": 120, "y": 270 },
-            { "abreviere": "SB", "culoare": "#388e3c", "x": 150, "y": 270 },
-            { "abreviere": "SJ", "culoare": "#e64a19", "x": 60, "y": 300 },
-            { "abreviere": "SM", "culoare": "#8e24aa", "x": 90, "y": 300 },
-            { "abreviere": "SV", "culoare": "#0288d1", "x": 120, "y": 300 },
-            { "abreviere": "TL", "culoare": "#ad1457", "x": 150, "y": 300 },
-            { "abreviere": "TM", "culoare": "#009688", "x": 60, "y": 330 },
-            { "abreviere": "TR", "culoare": "#512da8", "x": 90, "y": 330 },
-            { "abreviere": "VL", "culoare": "#d32f2f", "x": 120, "y": 330 },
-            { "abreviere": "VN", "culoare": "#7c4dff", "x": 150, "y": 330 },
-            { "abreviere": "VS", "culoare": "#2e7d32", "x": 180, "y": 330 },
-            { "abreviere": "B", "culoare": "#1a73e8", "x": 210, "y": 330 }
-        ];
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // URL GeoJSON (schimbă cu URL-ul GitHub dacă e cazul)
+    const geojsonURL = './ro.json'; // Sau 'https://raw.githubusercontent.com/maurSAN/harta-test/main/ro.json'
 
-        // Aplică culorile și adaugă etichetele
-        judete.forEach(judet => {
-            const path = document.getElementById(judet.abreviere);
-            if (path) {
-                path.style.fill = judet.culoare;
-                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                text.setAttribute("x", judet.x);
-                text.setAttribute("y", judet.y);
-                text.setAttribute("class", "judet-label");
-                text.textContent = judet.abreviere;
-                document.getElementById("harta-romania").appendChild(text);
-            }
-        });
-    </script>
+    // Abrevieri județe (fără diacritice, conform NAME_1 din ro.json)
+    const abbreviations = {
+      "alba": "AB", "arad": "AR", "arges": "AG", "bacau": "BC", "bihor": "BH",
+      "bistrita-nasaud": "BN", "botosani": "BT", "brasov": "BV", "braila": "BR",
+      "buzau": "BZ", "caras-severin": "CS", "calarasi": "CL", "cluj": "CJ",
+      "constanta": "CT", "covasna": "CV", "dambovita": "DB", "dolj": "DJ",
+      "galati": "GL", "giurgiu": "GR", "gorj": "GJ", "harghita": "HR",
+      "hunedoara": "HD", "ialomita": "IL", "iasi": "IS", "ilfov": "IF",
+      "maramures": "MM", "mehedinti": "MH", "mures": "MS", "neamt": "NT",
+      "olt": "OT", "prahova": "PH", "satu mare": "SM", "salaj": "SJ",
+      "sibiu": "SB", "suceava": "SV", "teleorman": "TR", "timis": "TM",
+      "tulcea": "TL", "vaslui": "VS", "valcea": "VL", "vrancea": "VN",
+      "bucuresti": "B"
+    };
+
+    // Culori pentru județe (distincte, compatibile cu teme deschise/întunecate)
+    const colors = {
+      "AB": "#e6194b", "AR": "#3cb44b", "AG": "#ffe119", "BC": "#4363d8", "BH": "#f58231",
+      "BN": "#911eb4", "BT": "#46f0f0", "BV": "#f032e6", "BR": "#bcf60c", "BZ": "#fabebe",
+      "CS": "#008080", "CL": "#e6beff", "CJ": "#9a6324", "CT": "#fffac8", "CV": "#800000",
+      "DB": "#aaffc3", "DJ": "#808000", "GL": "#ffd8b1", "GR": "#000075", "GJ": "#808080",
+      "HR": "#ffffff", "HD": "#000000", "IL": "#ff7f50", "IS": "#87ceeb", "IF": "#da70d6",
+      "MM": "#32cd32", "MH": "#ffb6c1", "MS": "#7b68ee", "NT": "#00ced1", "OT": "#ff69b4",
+      "PH": "#cd5c5c", "SM": "#4b0082", "SJ": "#20b2aa", "SB": "#b0e0e6", "SV": "#ff4500",
+      "TR": "#2e8b57", "TM": "#da70d6", "TL": "#deb887", "VS": "#5f9ea0", "VL": "#7fff00",
+      "VN": "#d2691e", "B": "#8b0000"
+    };
+
+    // Funcție pentru normalizarea numelor
+    function normalizeName(name) {
+      if (!name) return '';
+      return name.toLowerCase()
+        .replace(/ă/g, 'a')
+        .replace(/â/g, 'a')
+        .replace(/î/g, 'i')
+        .replace(/ș/g, 's')
+        .replace(/ț/g, 't')
+        .replace(/\s+/g, '-') // Spații -> cratimă
+        .replace(/[^a-z0-9-]/g, ''); // Elimină caractere speciale
+    }
+
+    // Inițializează harta
+    const map = L.map('map').setView([45.9432, 24.9668], 7); // Centru România
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    // Încarcă și afișează GeoJSON
+    fetch(geojsonURL)
+      .then(response => {
+        if (!response.ok) throw new Error('Eroare la încărcarea ro.json: ' + response.statusText);
+        return response.json();
+      })
+      .then(data => {
+        L.geoJSON(data, {
+          style: (feature) => {
+            const rawName = feature.properties.NAME_1 || feature.properties.name || feature.properties.NUME || '';
+            const name = normalizeName(rawName);
+            const abbr = abbreviations[name] || "??";
+            return {
+              color: "#333",
+              weight: 2,
+              fillColor: colors[abbr] || "#cccccc",
+              fillOpacity: 0.6
+            };
+          },
+          onEachFeature: (feature, layer) => {
+            const rawName = feature.properties.NAME_1 || feature.properties.name || feature.properties.NUME || '';
+            const name = normalizeName(rawName);
+            const abbr = abbreviations[name] || "??";
+            layer.bindTooltip(abbr, {
+              permanent: true,
+              direction: "center",
+              className: 'county-label'
+            });
+            layer.on('click', function(e) {
+              layer.bindPopup(`<b>${rawName}</b><br>Abreviere: ${abbr}<br>(Aici vor fi detalii despre terenuri)`).openPopup();
+            });
+          }
+        }).addTo(map);
+        map.fitBounds(L.geoJSON(data).getBounds());
+        // Log pentru debugging
+        console.log('Nume din JSON:', data.features.map(f => f.properties.NAME_1));
+      })
+      .catch(error => {
+        console.error('Eroare la fetch:', error);
+        alert('Nu s-a putut încărca ro.json. Verifică calea sau URL-ul.');
+      });
+  </script>
 </body>
 </html>
