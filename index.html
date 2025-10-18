@@ -119,7 +119,7 @@
               className: 'county-label'
             });
             layer.on('click', function(e) {
-              layer.bindPopup(`<b>${rawName}</b><br>Abreviere: ${abbr}<br>(Aici vor fi detalii despre terenuri)`).openPopup();
+              layer.bindPopup(`<b>${abbr}<br>(Aici vor fi detalii despre terenuri)`).openPopup();
             });
           }
         }).addTo(map);
@@ -134,3 +134,4 @@
   </script>
 </body>
 </html>
+
