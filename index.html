@@ -58,7 +58,7 @@
       "bucuresti": "B"
     };
 
-    // Culori pentru județe (distincte, compatibile cu teme deschise/întunecate)
+    // Culori pentru județe
     const colors = {
       "AB": "#e6194b", "AR": "#3cb44b", "AG": "#ffe119", "BC": "#4363d8", "BH": "#f58231",
       "BN": "#911eb4", "BT": "#46f0f0", "BV": "#f032e6", "BR": "#bcf60c", "BZ": "#fabebe",
@@ -90,6 +90,12 @@
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
+    // Creează pane-uri pentru a controla ordinea straturilor
+    map.createPane('bucurestiPane');
+    map.getPane('bucurestiPane').style.zIndex = 650;
+    map.createPane('otherPane');
+    map.getPane('otherPane').style.zIndex = 600;
+
     // Încarcă și afișează GeoJSON
     fetch(geojsonURL)
       .then(response => {
@@ -103,10 +109,11 @@
             const name = normalizeName(rawName);
             const abbr = abbreviations[name] || "??";
             return {
-              color: "#333",
-              weight: 2,
+              color: "#000000", // Contur negru
+              weight: 3, // Grosime contur mărită
               fillColor: colors[abbr] || "#cccccc",
-              fillOpacity: 0.6
+              fillOpacity: 0.6,
+              pane: abbr === "B" ? "bucurestiPane" : "otherPane" // București deasupra
             };
           },
           onEachFeature: (feature, layer) => {
