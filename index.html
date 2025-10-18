@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Harta beta</title>
+  <title>Harta României — Județe Colorate</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     body, html { margin: 0; height: 100%; }
@@ -23,25 +23,21 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Funcție pentru normalizarea numelor (elimină diacritice și face lowercase)
+    // Funcție pentru normalizarea numelor (doar lowercase, păstrează diacritice)
     function normalizeName(name) {
       if (!name) return '';
-      return name.toLowerCase()
-        .replace(/ă/g, 'a')
-        .replace(/â/g, 'a')
-        .replace(/î/g, 'i')
-        .replace(/ș/g, 's')
-        .replace(/ț/g, 't');
+      return name.toLowerCase();
     }
 
     // Inițializare hartă cu limite stricte pentru România
     const map = L.map('map', {
       maxBounds: [[43.5, 20.2], [48.7, 29.7]],
       maxBoundsViscosity: 1.0,
-      minZoom: 6 // Previne zoom-out excesiv
-    }).setView([45.9432, 24.9668], 7); // Centru România, zoom inițial
+      minZoom: 6,
+      maxZoom: 12
+    }).setView([45.9432, 24.9668], 7); // Centru România
 
-    // Forțează revenirea la bounds la orice încercare de ieșire
+    // Forțează revenirea la bounds
     map.on('drag', function() {
       map.panInsideBounds(map.options.maxBounds);
     });
@@ -56,23 +52,23 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // URL GeoJSON
-    const geojsonURL = 'https://raw.githubusercontent.com/maurSAN/harta-test/main/ro.json';
+    // URL GeoJSON (local)
+    const geojsonURL = 'ro.json'; // Schimbă în 'romania-counties.geojson' dacă așa l-ai salvat
 
-    // Abrevieri județe (chei normalizate fără diacritice)
+    // Abrevieri județe (cu diacritice, conform GeoJSON)
     const abbreviations = {
-      "alba": "AB", "arad": "AR", "arges": "AG", "bacau": "BC", "bihor": "BH",
-      "bistrita-nasaud": "BN", "botosani": "BT", "brasov": "BV", "braila": "BR",
-      "buzau": "BZ", "caras-severin": "CS", "calarasi": "CL", "cluj": "CJ",
-      "constanta": "CT", "covasna": "CV", "dambovita": "DB", "dolj": "DJ",
-      "galati": "GL", "giurgiu": "GR", "gorj": "GJ", "harghita": "HR", "hunedoara": "HD",
-      "ialomita": "IL", "iasi": "IS", "ilfov": "IF", "maramures": "MM", "mehedinti": "MH",
-      "mures": "MS", "neamt": "NT", "olt": "OT", "prahova": "PH", "satu mare": "SM",
-      "salaj": "SJ", "sibiu": "SB", "suceava": "SV", "teleorman": "TR", "timis": "TM",
-      "tulcea": "TL", "vaslui": "VS", "valcea": "VL", "vrancea": "VN", "bucuresti": "B"
+      "alba": "AB", "arad": "AR", "argeș": "AG", "bacău": "BC", "bihor": "BH",
+      "bistrița-năsăud": "BN", "botoșani": "BT", "brașov": "BV", "brăila": "BR",
+      "buzău": "BZ", "caraș-severin": "CS", "călărași": "CL", "cluj": "CJ",
+      "constanța": "CT", "covasna": "CV", "dâmbovița": "DB", "dolj": "DJ",
+      "galați": "GL", "giurgiu": "GR", "gorj": "GJ", "harghita": "HR", "hunedoara": "HD",
+      "ialomița": "IL", "iași": "IS", "ilfov": "IF", "maramureș": "MM", "mehedinți": "MH",
+      "mureș": "MS", "neamț": "NT", "olt": "OT", "prahova": "PH", "satu mare": "SM",
+      "sălaj": "SJ", "sibiu": "SB", "suceava": "SV", "teleorman": "TR", "timiș": "TM",
+      "tulcea": "TL", "vaslui": "VS", "vâlcea": "VL", "vrancea": "VN", "bucurești": "B"
     };
 
-    // Culoare fixă pentru fiecare județ (folosim abrevierile ca chei)
+    // Culoare fixă pentru fiecare județ
     const colors = {
       "AB": "#e6194b", "AR": "#3cb44b", "AG": "#ffe119", "BC": "#4363d8", "BH": "#f58231",
       "BN": "#911eb4", "BT": "#46f0f0", "BV": "#f032e6", "BR": "#bcf60c", "BZ": "#fabebe",
@@ -87,11 +83,14 @@
 
     // Încărcare și afișare GeoJSON
     fetch(geojsonURL)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`Fișierul GeoJSON nu s-a găsit: ${res.status} ${res.statusText}`);
+        return res.json();
+      })
       .then(data => {
         const geoLayer = L.geoJSON(data, {
           style: (feature) => {
-            const rawName = feature.properties.name || feature.properties.NUME || '';
+            const rawName = feature.properties.NAME_1 || '';
             const name = normalizeName(rawName);
             const abbr = abbreviations[name] || "??";
             return {
@@ -102,7 +101,7 @@
             };
           },
           onEachFeature: (feature, layer) => {
-            const rawName = feature.properties.name || feature.properties.NUME || '';
+            const rawName = feature.properties.NAME_1 || '';
             const name = normalizeName(rawName);
             const abbr = abbreviations[name] || "??";
             layer.bindTooltip(abbr, {
@@ -110,20 +109,19 @@
               direction: "center",
               className: 'county-label'
             });
-            // Adaugă click pe județ (placeholder pentru funcționalități viitoare)
             layer.on('click', function(e) {
-              layer.bindPopup(`<b>${rawName}</b><br>Abreviere: ${abbr}<br>(Aici poți adăuga detalii despre terenuri)`).openPopup();
+              layer.bindPopup(`<b>${rawName}</b><br>Abreviere: ${abbr}<br>(Aici vor fi detalii despre terenuri)`).openPopup();
             });
           }
         }).addTo(map);
         
-        // Zoom automat strict pe România
-        map.fitBounds(geoLayer.getBounds(), { padding: [20, 20] });
+        // Zoom strict pe România
+        map.fitBounds(geoLayer.getBounds(), { padding: [10, 10] });
       })
       .catch(err => {
         console.error('Eroare la încărcare GeoJSON:', err);
         const mapDiv = document.getElementById('map');
-        mapDiv.innerHTML = '<p style="text-align:center;color:red;">Eroare la încărcarea hărții. Verifică URL-ul GeoJSON sau conexiunea.</p>';
+        mapDiv.innerHTML = '<p style="text-align:center;color:red;">Eroare: Nu s-a putut încărca ro.json. Verifică dacă fișierul e în folderul corect sau descarcă-l din nou.</p>';
       });
   </script>
 </body>
