@@ -1,56 +1,181 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Harta României</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Harta României — Starter Kit</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-sA+e2HkP3r+gGkXk0y0vZb1b6bHkY6Yw5p2u9g6uR0M=" crossorigin=""/>
   <style>
-    body, html { margin:0; height:100%; }
-    #map { width:100%; height:100%; }
+    html,body,#app{height:100%;margin:0}
+    #app{display:grid;grid-template-columns: 1fr 360px;gap:0}
+    #map{height:100%;width:100%}
+    #side{background:#fff;overflow:auto;padding:12px;border-left:1px solid #ddd}
+    .county-name{font-weight:700;margin-bottom:8px}
+    .highlight{padding:8px;border:1px solid #eee;border-left:4px solid #2b7cff;margin-bottom:8px;cursor:pointer;border-radius:6px}
+    .highlight small{display:block;color:#666}
+    .detail{padding:10px;background:#fafafa;border-radius:6px;border:1px solid #eee}
+    .btn{display:inline-block;padding:6px 10px;border-radius:6px;background:#2b7cff;color:#fff;text-decoration:none}
+    @media (max-width:900px){#app{grid-template-columns:1fr} #side{height:40vh}}
   </style>
 </head>
 <body>
+<div id="app">
   <div id="map"></div>
+  <div id="side">
+    <div id="intro">
+      <h2>Harta României — demo</h2>
+      <p>Click pe un județ ca să vezi <strong>highlights</strong> (ex: terenuri). Apoi click pe un highlight pentru detalii.</p>
+      <p><em>Instrucțiuni:</em> înlocuiește variabila <code>countiesGeoJSON</code> cu GeoJSON-ul tău (admin level 1) sau setează <code>geojsonUrl</code> către un fișier .geojson accesibil.</p>
+    </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    // Inițializează harta
-    const map = L.map('map');
+    <div id="panel">
+      <div id="countyInfo"><p>Selectează un județ.</p></div>
+      <div id="highlightsList"></div>
+      <div id="detail"></div>
+    </div>
+  </div>
+</div>
 
-    // Tile layer OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-o9N1j7k2vQb4w6g8yKkKQm0b8s+vYg1v1j9f4m0z6mM=" crossorigin=""></script>
 
-    // GeoJSON cu toate județele României
-    const countiesGeoJSON = {
-      "type": "FeatureCollection",
-      "features": [
-        { "type": "Feature", "properties": { "name": "Alba" }, "geometry": { "type": "Polygon", "coordinates": [[[23.5,46.0],[23.6,46.1],[23.7,46.0],[23.6,45.9],[23.5,46.0]]] } },
-        { "type": "Feature", "properties": { "name": "Arad" }, "geometry": { "type": "Polygon", "coordinates": [[[21.3,46.2],[21.4,46.3],[21.5,46.2],[21.4,46.1],[21.3,46.2]]] } },
-        { "type": "Feature", "properties": { "name": "Argeș" }, "geometry": { "type": "Polygon", "coordinates": [[[24.7,44.9],[24.8,45.0],[25.0,44.9],[24.9,44.8],[24.7,44.9]]] } },
-        { "type": "Feature", "properties": { "name": "Bacău" }, "geometry": { "type": "Polygon", "coordinates": [[[26.5,46.4],[26.6,46.5],[26.7,46.4],[26.6,46.3],[26.5,46.4]]] } },
-        { "type": "Feature", "properties": { "name": "Bihor" }, "geometry": { "type": "Polygon", "coordinates": [[[21.9,47.0],[22.0,47.1],[22.1,47.0],[22.0,46.9],[21.9,47.0]]] } },
-        { "type": "Feature", "properties": { "name": "Bistrița-Năsăud" }, "geometry": { "type": "Polygon", "coordinates": [[[24.5,47.2],[24.6,47.3],[24.7,47.2],[24.6,47.1],[24.5,47.2]]] } },
-        { "type": "Feature", "properties": { "name": "Botoșani" }, "geometry": { "type": "Polygon", "coordinates": [[[27.3,47.7],[27.4,47.8],[27.5,47.7],[27.4,47.6],[27.3,47.7]]] } },
-        { "type": "Feature", "properties": { "name": "Brașov" }, "geometry": { "type": "Polygon", "coordinates": [[[25.5,45.6],[25.6,45.7],[25.7,45.6],[25.6,45.5],[25.5,45.6]]] } },
-        { "type": "Feature", "properties": { "name": "Brăila" }, "geometry": { "type": "Polygon", "coordinates": [[[27.9,45.3],[28.0,45.4],[28.1,45.3],[28.0,45.2],[27.9,45.3]]] } },
-        { "type": "Feature", "properties": { "name": "Buzău" }, "geometry": { "type": "Polygon", "coordinates": [[[26.7,45.2],[26.8,45.3],[26.9,45.2],[26.8,45.1],[26.7,45.2]]] } }
-        // Continuă pentru restul județelor sau adaugă-le mai târziu
-      ]
-    };
+<script>
+/* ======================
+   Starter kit pentru:
+   - afișare hartă României (județe)
+   - click pe județ -> listă highlights (ex: terenuri)
+   - click highlight -> detaliu + zoom
+   ----------------------
+   Ce trebuie să schimbi:
+   1) Pune aici GeoJSON-ul pentru județe (sau setează geojsonUrl)
+   2) Înlocuiește array-ul `highlightsData` cu datele tale reale (sau încarcă din API)
+   Format highlight exemplu:
+   { id: 1, judet: 'Iași', localitate: 'Piatra Neamț', suprafata_mp: 1200, coord: [lat, lng], descriere: 'teren ideal' }
+   ======================
+*/
 
-    // Adaugă județele pe hartă
-    const geojsonLayer = L.geoJSON(countiesGeoJSON, {
-      style: { color:'#3388ff', weight:2, fillOpacity:0.1 },
-      onEachFeature: function(feature, layer) {
-        layer.bindPopup(feature.properties.name);
-      }
-    }).addTo(map);
+// --- Opțiune A: încarcă GeoJSON dintr-un URL (dezactivează variabila countiesGeoJSON de mai jos dacă folosești URL)
+const geojsonUrl = null; // ex: '/data/romania_judete.geojson' sau 'https://.../romania_judete.geojson'
 
-    // Zoom automat ca să se vadă toate județele
-    map.fitBounds(geojsonLayer.getBounds());
-  </script>
+// --- Opțiune B: înlocuiește cu conținutul GeoJSON direct (dacă vrei totul static)
+const countiesGeoJSON = null; // pune obiectul GeoJSON aici dacă ai fișierul
+
+// --- Date demo pentru highlights (înlocuiește cu date reale sau fetch din API)
+const highlightsData = [
+  { id: 1, judet: 'Neamț', localitate: 'Piatra Neamț', suprafata_mp: 1500, coord: [46.9382, 26.3369], descriere: 'teren agricol, ideal pentru proiect' },
+  { id: 2, judet: 'Neamț', localitate: 'Roznov', suprafata_mp: 5000, coord: [47.1000, 26.2000], descriere: 'parcela cu acces la drum' },
+  { id: 3, judet: 'Iași', localitate: 'Iași', suprafata_mp: 800, coord: [47.1625, 27.5889], descriere: 'teren urban mic' }
+];
+
+// --- Initializare hartă
+const map = L.map('map', {zoomControl:true}).setView([46.0, 25.0], 7);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+let countiesLayer = null;
+
+function styleCounty(feature){
+  return {color:'#444', weight:1, fillColor:'#f4f6f8', fillOpacity:0.6}
+}
+
+function onEachCounty(feature, layer){
+  const name = feature.properties && (feature.properties.name || feature.properties.NAME || feature.properties.nume) || 'Nume necunoscut';
+  layer.on('click', function(e){
+    selectCounty(name, feature, layer, e);
+  });
+  layer.bindTooltip(name, {permanent:false, direction:'center'});
+}
+
+function loadCounties(geojson){
+  if(countiesLayer) map.removeLayer(countiesLayer);
+  countiesLayer = L.geoJSON(geojson, {
+    style: styleCounty,
+    onEachFeature: onEachCounty
+  }).addTo(map);
+}
+
+function selectCounty(name, feature, layer, e){
+  // Highlight vizual
+  countiesLayer.resetStyle();
+  layer.setStyle({fillColor:'#ffe680', fillOpacity:0.7});
+
+  // Date in panel
+  document.getElementById('countyInfo').innerHTML = `<div class="county-name">${name}</div><div>Obiecte găsite: <strong>${countHighlightsForCounty(name)}</strong></div>`;
+
+  // List highlights
+  const list = highlightsData.filter(h => h.judet.toLowerCase() === name.toLowerCase());
+  renderHighlightsList(list);
+
+  // Opțional: zoom la județ
+  try{
+    map.fitBounds(layer.getBounds(), {maxZoom:11});
+  }catch(err){console.warn('Nu am putut face fitBounds:', err)}
+}
+
+function countHighlightsForCounty(name){
+  return highlightsData.filter(h => h.judet.toLowerCase() === name.toLowerCase()).length;
+}
+
+function renderHighlightsList(list){
+  const container = document.getElementById('highlightsList');
+  container.innerHTML = '';
+  if(list.length===0){ container.innerHTML = '<p>Nu exista highlights în acest județ.</p>'; return; }
+  list.forEach(h =>{
+    const div = document.createElement('div');
+    div.className = 'highlight';
+    div.innerHTML = `<strong>${h.localitate}</strong> — ${h.suprafata_mp} m² <small>${h.descriere || ''}</small>`;
+    div.onclick = ()=> showHighlightDetail(h);
+    container.appendChild(div);
+  });
+}
+
+function showHighlightDetail(h){
+  const d = document.getElementById('detail');
+  d.innerHTML = `<div class="detail">
+    <h3>Detaliu obiect</h3>
+    <p><strong>ID:</strong> ${h.id}</p>
+    <p><strong>Județ:</strong> ${h.judet}</p>
+    <p><strong>Localitate:</strong> ${h.localitate}</p>
+    <p><strong>Suprafață:</strong> ${h.suprafata_mp} m²</p>
+    <p><strong>Descriere:</strong> ${h.descriere || '-'}</p>
+    <p><a class="btn" href="#" onclick="zoomToHighlight(${h.coord[0]}, ${h.coord[1]});return false;">Zoom pe hartă</a></p>
+  </div>`;
+}
+
+function zoomToHighlight(lat, lng){
+  map.setView([lat, lng], 14);
+  // marker temporar
+  if(window._tempMarker) map.removeLayer(window._tempMarker);
+  window._tempMarker = L.marker([lat,lng]).addTo(map).bindPopup('Locație selectată').openPopup();
+}
+
+// --- Încarcă geojson din URL sau folosește variabila inline
+if(geojsonUrl){
+  fetch(geojsonUrl).then(r=>r.json()).then(j=>{
+    loadCounties(j);
+  }).catch(err=>{console.error('Eroare la încărcare geojson:', err); document.getElementById('countyInfo').innerText = 'Eroare la încărcare geojson: ' + err});
+}else if(countiesGeoJSON){
+  loadCounties(countiesGeoJSON);
+}else{
+  document.getElementById('countyInfo').innerHTML = '<p><strong>Atenție:</strong> Nu a fost furnizat GeoJSON pentru județe. Pune fișierul în variabila <code>countiesGeoJSON</code> sau setează <code>geojsonUrl</code>.</p>';
+}
+
+// --- Funcție utilă: încărcare date highlights dintr-un API (opțional)
+async function loadHighlightsFromApi(url){
+  try{
+    const r = await fetch(url);
+    const data = await r.json();
+    // așteptăm ca datele să aibă proprietățile minime: id, judet, localitate, suprafata_mp, coord
+    window.highlightsData = data;
+    // re-render dacă e selectat un județ
+  }catch(e){console.error('Eroare la loadHighlightsFromApi', e)}
+}
+
+</script>
 </body>
 </html>
