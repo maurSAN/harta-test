@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Harta României — Județe Colorate</title>
+<title>Harta test</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   body, html { margin:0; height:100%; }
@@ -32,7 +32,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-const geojsonURL = 'https://raw.githubusercontent.com/maurSAN/harta-test/main/centre-judete.geojson';
+const geojsonURL = 'https://raw.githubusercontent.com/maurSAN/-test/main/ro.json';
 
 // Abrevieri județe
 const abbreviations = {
@@ -93,3 +93,4 @@ fetch(geojsonURL)
 </script>
 </body>
 </html>
+
